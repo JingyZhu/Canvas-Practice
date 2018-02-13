@@ -56,10 +56,9 @@ class Circle {
         //console.log('draw');
         c.arc(this.x, this.y, radius, 0, Math.PI * 2, 0);
         c.strokeStyle = this.color;
-        c.stroke();
         c.fillStyle = this.color;
+        c.stroke();
         c.fill();
-        c.closePath();
     }
 
     moveTo(theta) {
@@ -138,6 +137,8 @@ window.addEventListener('resize', function () {
     canvas.height = window.innerHeight;
     innerWidth = canvas.width;
     innerHeight = canvas.height;
+    let widthCenter = innerWidth / 2;
+    let heightCenter = innerHeight / 2;
     img.src = src;
 });
 
