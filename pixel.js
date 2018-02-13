@@ -13,12 +13,12 @@ let heightCenter = innerHeight / 2;
 
 let c = canvas.getContext('2d');
 
-const radius = 2;
-const alias = 1;
+const radius = 4;
+const alias = 2;
 const ratio = (radius + alias) / radius;
 const thres = 190;
 const circleRadius = 380;
-const maxAcc = 1;
+const maxAcc = 0.3;
 const rgb = (red, green, blue, alpha) => `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 const randomAngle = () => Math.random() * Math.PI * 2;
 const distance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -137,8 +137,8 @@ window.addEventListener('resize', function () {
     canvas.height = window.innerHeight;
     innerWidth = canvas.width;
     innerHeight = canvas.height;
-    let widthCenter = innerWidth / 2;
-    let heightCenter = innerHeight / 2;
+    widthCenter = innerWidth / 2;
+    heightCenter = innerHeight / 2;
     img.src = src;
 });
 
