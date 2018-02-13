@@ -83,7 +83,7 @@ window.addEventListener('resize', function(){
     innerWidth = canvas.width;
     innerHeight = canvas.height;
     for (let i = 0; i < numArcs; i++) {
-        Circlearray[i].update();
+        CircleArray[i].update();
     }
 })
 

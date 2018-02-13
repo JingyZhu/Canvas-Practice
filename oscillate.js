@@ -20,7 +20,7 @@ const distance = (x1, y1, x2, y2) => Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)
 const radius = 2;
 const circleRadius = 300;
 const numArcs = 1500;
-const maxAcc = 1;
+const maxAcc = 0.5;
 // ----------------------
 
 let CircleArray = [];
