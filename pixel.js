@@ -17,8 +17,8 @@ const radius = 2;
 const alias = 1;
 const ratio = (radius + alias) / radius;
 const thres = 190;
-const circleRadius = 300;
-const maxAcc = 0.5;
+const circleRadius = 380;
+const maxAcc = 1;
 const rgb = (red, green, blue, alpha) => `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 const randomAngle = () => Math.random() * Math.PI * 2;
 const distance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -42,7 +42,7 @@ class Circle {
         this.startY = y;
         this.dx = 0;
         this.dy = 0;
-        this.finished = false;
+        this.finished = 0;
         this.accX = 0;
         this.accY = 0;
         this.destX = x;
@@ -89,8 +89,16 @@ class Circle {
 
     update() {
         //console.log(this.color);
+        if (showImage && this.finished==2) {
+            this.draw();
+            return;
+        } else if (!showImage && this.finished==2) {
+            this.finished = 0;
+            this.moveTo(randomAngle());
+        }
+
+        //console.log(this.finished);
         const halfWayX = (this.destX - this.startX) / 2;
-        
         const nowX = this.x - this.startX;
         //Get how far we've gone. Thus decide the speed of next move
         let progress = (nowX - halfWayX) / halfWayX;
@@ -105,16 +113,16 @@ class Circle {
             this.accX = 0;
             this.accY = 0;
             if (showImage) {
-                if (this.finished) {
-                    console.log(returnValue);
+                if (this.finished == 1) {
                     returnValue += 1;
-                    this.finished = false;
+                    this.finished = 2;
                 } else {
                     this.moveBack();
-                    this.finished = true;
+                    this.finished = 1;
                 }
             } else {
                 this.moveTo(randomAngle());
+                //console.log(this.destX);
             }
         } else {
             this.x += this.dx;
@@ -149,7 +157,8 @@ function ready() {
     const beginY = (innerHeight - shiftHeight) / 2;
     c.drawImage(img, (innerWidth - shiftWidth) / 2, (innerHeight - shiftHeight) / 2, shiftWidth, shiftHeight);
     pixelize();
-    for (let i = 10000; i < 10100; i++){
+    console.log(CircleArray.length);
+    for (let i = 0; i < CircleArray.length; i++) {
         // console.log(CircleArray[i].color);
         CircleArray[i].moveTo(randomAngle());
     }
@@ -167,9 +176,11 @@ function dealing(imgData, beginX, beginY, numX, numY) {
             green = imgData[(y * numX + x) * 4 + 1];
             blue = imgData[(y * numX + x) * 4 + 2];
             alpha = imgData[(y * numX + x) * 4 + 3];
+            if (alpha >= 0.9) {
             //console.log(rgb(red, green, blue))
-            let circle = new Circle(x + beginX + (x / radius) * alias, y + beginY + (y / radius) * alias, rgb(red, green, blue, alpha));
-            CircleArray.push(circle);
+                let circle = new Circle(x + beginX + (x / radius) * alias, y + beginY + (y / radius) * alias, rgb(red, green, blue, alpha));
+                CircleArray.push(circle);
+            }
         }
     }
 }
@@ -190,11 +201,10 @@ function pixelize() {
 function oscillate() {
     requestId = requestAnimationFrame(oscillate);
     c.clearRect(0, 0, innerWidth, innerHeight);
-    for (let i = 10000; i < 10100; i++) {
+    for (let i = 0; i < CircleArray.length; i++) {
         CircleArray[i].update();
     }
-    if (showImage && returnValue >= 103) {
-        console.log('stop');
+    if (showImage && returnValue >= CircleArray.length) {
         window.cancelAnimationFrame(requestId);
         requestId = undefined;
         returnValue = 0;
