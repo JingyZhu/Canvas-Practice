@@ -13,8 +13,8 @@ let heightCenter = innerHeight / 2;
 
 let c = canvas.getContext('2d');
 
-const radius = 4;
-const alias = 2;
+const radius = 3;
+const alias = 1;
 const ratio = (radius + alias) / radius;
 const thres = 190;
 const circleRadius = 380;
@@ -22,14 +22,15 @@ const maxAcc = 0.3;
 const rgb = (red, green, blue, alpha) => `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 const randomAngle = () => Math.random() * Math.PI * 2;
 const distance = (x1, y1, x2, y2) => Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+const zoom = 0.5;
 
-const src = './images/char.png';
+const src = './images/barcelona_0.5_3_1.png';
 
 let CircleArray = [];
-let showImage = false;
+let showImage = true;
 let requestId = undefined;
 let returnValue = 0;
-
+let begin = true;
 
 //console.log(canvas.style);
 
@@ -143,6 +144,7 @@ window.addEventListener('resize', function () {
 });
 
 window.addEventListener('click', function () {
+    begin = false;
     showImage = !showImage;
     if (!showImage) {
         oscillate();
@@ -152,18 +154,24 @@ window.addEventListener('click', function () {
 let img = new Image();
 
 function ready() {
-    const shiftWidth = img.naturalWidth;
-    const shiftHeight = img.naturalHeight;
+    const shiftWidth = img.naturalWidth*zoom;
+    const shiftHeight = img.naturalHeight*zoom;
     const beginX = (innerWidth - shiftWidth) / 2;
     const beginY = (innerHeight - shiftHeight) / 2;
     c.drawImage(img, (innerWidth - shiftWidth) / 2, (innerHeight - shiftHeight) / 2, shiftWidth, shiftHeight);
     pixelize();
-    console.log(CircleArray.length);
+    //console.log(CircleArray.length);
     for (let i = 0; i < CircleArray.length; i++) {
         // console.log(CircleArray[i].color);
+        let theta = randomAngle();
+        CircleArray[i].x = widthCenter + circleRadius * Math.cos(theta);
+        CircleArray[i].y = heightCenter + circleRadius * Math.sin(theta);
         CircleArray[i].moveTo(randomAngle());
+        CircleArray[i].draw();
     }
-    oscillate();
+    if (begin == false) {
+        oscillate();
+    }
 }
 
 function dealing(imgData, beginX, beginY, numX, numY) {
@@ -187,16 +195,16 @@ function dealing(imgData, beginX, beginY, numX, numY) {
 }
 
 function pixelize() {
-    const shiftWidth = img.naturalWidth;
-    const shiftHeight = img.naturalHeight;
+    const shiftWidth = img.naturalWidth*zoom;
+    const shiftHeight = img.naturalHeight*zoom;
     const beginX = (innerWidth - shiftWidth * ratio) / 2;
     const beginY = (innerHeight - shiftHeight * ratio) / 2;
     let imageData = c.getImageData((innerWidth - shiftWidth) / 2, (innerHeight - shiftHeight) / 2, shiftWidth, shiftHeight);
     c.clearRect((innerWidth - shiftWidth) / 2, (innerHeight - shiftHeight) / 2, shiftWidth, shiftHeight);
     dealing(imageData.data, beginX, beginY, shiftWidth, shiftHeight);
-    for (let i = 0; i < CircleArray.length; i++) {
-        CircleArray[i].draw();
-    }
+    // for (let i = 0; i < CircleArray.length; i++) {
+    //     CircleArray[i].draw();
+    // }
 }
 
 function oscillate() {
